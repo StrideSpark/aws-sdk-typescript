@@ -45,10 +45,10 @@ export class AWSTypeGenerator {
     return template
   }
 
-  generateMainModule(services:string[]) {
+  generateMainModule(services: string[]) {
     var template = this.fetchTemplate('aws-sdk');
 
-    return template({services:services});
+    return template({ services: services });
   }
 
   generateServiceDefinitions(api: meta.ServiceInfo) {
@@ -59,10 +59,10 @@ export class AWSTypeGenerator {
     return moduleTemplate(api)
   }
 
-  private getAlias(shape:meta.Shape): meta.Alias {
-    var alias:meta.Alias = {name: shape.name, type: shape.type};
+  private getAlias(shape: meta.Shape): meta.Alias {
+    var alias: meta.Alias = { name: shape.name, type: shape.type };
 
-    var comments:string[] = [];
+    var comments: string[] = [];
     if (shape.pattern) {
       comments.push(`pattern: "${shape.pattern}"`);
     }
@@ -73,7 +73,7 @@ export class AWSTypeGenerator {
       comments.push(`min: ${shape.min}`);
     }
 
-    if (shape.type.match(/long|integer|timestamp|double|float/)){
+    if (shape.type.match(/long|integer|timestamp|double|float/)) {
       alias.type = 'number';
     }
     else if (shape.type == 'map') {
@@ -99,7 +99,7 @@ export class AWSTypeGenerator {
     return alias;
   }
 
-  private getStructure(shape:meta.Shape):meta.Shape {
+  private getStructure(shape: meta.Shape): meta.Shape {
     Object.keys(shape.members).forEach(function(k) {
       shape.members[k].required = "?";
     })
@@ -112,7 +112,7 @@ export class AWSTypeGenerator {
     return shape;
   }
 
-  private cleanShapes(descriptor:meta.Descriptor) {
+  private cleanShapes(descriptor: meta.Descriptor) {
     //set the name
     Object.keys(descriptor.shapes)
       .forEach(name => descriptor.shapes[name].name = name);

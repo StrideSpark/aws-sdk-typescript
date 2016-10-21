@@ -5,13 +5,13 @@ export interface ExtraClientMethod {
 }
 
 export interface ServiceInfo {
-  name:string;
-  versions?:string[];
-  prefix?:string;
-  input?:string;
-  output?:string;
-  content?:string;
-  descriptor?:Descriptor;
+  name: string;
+  versions?: string[];
+  prefix?: string;
+  input?: string;
+  output?: string;
+  content?: string;
+  descriptor?: Descriptor;
 
   extraClientMethods?: ExtraClientMethod[];
 }
@@ -46,9 +46,9 @@ export interface Shape {
   name?: string
   min?: number
   max?: number
-  key?: {shape: string}
-  value?: {shape: string}
-  member?: {shape: string}
+  key?: { shape: string }
+  value?: { shape: string }
+  member?: { shape: string }
 }
 
 export interface Member {

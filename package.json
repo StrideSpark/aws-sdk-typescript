@@ -18,6 +18,7 @@
     "AWS",
     "Typings"
   ],
+  "typings": "index.d.ts",
   "license": "Apache-2.0",
   "licenses": [
     {

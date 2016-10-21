@@ -15,14 +15,14 @@ var estraverse = require('estraverse');
 var escodegen = require('escodegen');
 
 import * as handlebars from 'handlebars';
-import {ExtraClientMethod} from "./meta";
+import { ExtraClientMethod } from "./meta";
 
 require('source-map-support').install();
 
-var sdkDir:string;
-var metadata:{[serviceName:string]:meta.ServiceInfo};
+var sdkDir: string;
+var metadata: { [serviceName: string]: meta.ServiceInfo };
 
-function readMetadata():{[serviceName:string]:meta.ServiceInfo} {
+function readMetadata(): { [serviceName: string]: meta.ServiceInfo } {
   return JSON.parse(fs.readFileSync(path.join(sdkDir, "metadata.json")).toString());
 }
 
@@ -61,8 +61,8 @@ function copyCommonDefs() {
   //
   var templateContent = fs.readFileSync(__dirname + '/../src/aws-sdk.handlebars').toString();
 
-  [ 'output', 'output/typings'].forEach((path: string) => {
-    if (! fs.existsSync(path)) {
+  ['output', 'output/typings'].forEach((path: string) => {
+    if (!fs.existsSync(path)) {
       fs.mkdirSync(path)
     }
   })
@@ -85,7 +85,7 @@ function generateModuleFile() {
 }
 
 function generateBaseDir() {
-  ['output', 'output/typings'].forEach((path:string) => {
+  ['output', 'output/typings'].forEach((path: string) => {
     if (!fs.existsSync(path)) {
       fs.mkdirSync(path)
     }
@@ -103,7 +103,7 @@ function generateIndexDTS() {
     return metadata[name].output;
   }).join("\n");
 
-  var commonContent = template({services: Object.keys(metadata), sdkContent: moduleContent});
+  var commonContent = template({ services: Object.keys(metadata), sdkContent: moduleContent });
 
   fs.writeFileSync('output/typings/index.d.ts', commonContent);
 }
@@ -123,21 +123,21 @@ function readCustomCode() {
 
   var paths = glob.sync(expr)
 
-  var methodsToAdd:any = {}
+  var methodsToAdd: any = {}
 
   if (paths && paths.length > 0) {
-    paths.forEach((p:string) => {
+    paths.forEach((p: string) => {
       var src = fs.readFileSync(p).toString()
-      var ast = esprima.parse(src, {comment: true, attachComment: true})
+      var ast = esprima.parse(src, { comment: true, attachComment: true })
 
       var matcher = jsstana.createMatcher("(call (lookup AWS.util.update) ? ?)")
 
       estraverse.traverse(ast, {
-        enter: function (n:any) {
+        enter: function(n: any) {
           if (matcher(n)) {
             var classname = escodegen.generate(n.arguments[0]).replace(/AWS\.(\w+)\.prototype/, "$1")
 
-            var methodList = n.arguments[1].properties.map((x:any) => {
+            var methodList = n.arguments[1].properties.map((x: any) => {
               var context = {
                 classname: classname,
                 name: x.key.name,
@@ -170,7 +170,7 @@ function readCustomCode() {
     })
   }
 
-  Object.keys(metadata).forEach((serviceName:string) => {
+  Object.keys(metadata).forEach((serviceName: string) => {
     var k = metadata[serviceName].name
     if (methodsToAdd.hasOwnProperty(k)) {
       metadata[serviceName].extraClientMethods = methodsToAdd[k]
@@ -211,4 +211,3 @@ generateServiceDefinitions();
 generateModuleFile();
 
 updateTypingsJson();
-
